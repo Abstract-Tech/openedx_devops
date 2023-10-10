@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubeapps
+  namespace: kubeapps
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: service.openedx-devops.abzt.de
+spec:
+  tls:
+  - hosts:
+    - "kubeapps.service.openedx-devops.abzt.de"
+    secretName: service.openedx-devops.abzt.de-tls
+  rules:
+  - host: kubeapps.service.openedx-devops.abzt.de
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kubeapps
+            port:
+              number: 80
